@@ -113,12 +113,15 @@ class MessageUpdate(BaseModel):
 class Chat:
     def __init__(self):
         self.messages = self.load_messages()
+        """Проставляет id сообщений последовательно
+           если сообщений нет в чате, то id = 1"""
         if self.messages:
             self.next_id = max(message["id"] for message in self.messages) + 1
         else:
             self.next_id = 1
 
     def load_messages(self):
+        # Считывает JSON файл с сообщениями
         try:
             with open('messages.json', 'r') as file:
                 data = json.load(file)
@@ -127,24 +130,29 @@ class Chat:
             return []
 
     def save_message(self, messages):
+        # Записывает сообщения в JSON файл
         with open('messages.json', 'w') as file:
             json.dump({"data": messages}, file, default=str)
 
     def add_message(self, message: Message):
+        # Отпаавлет сообщения
         message.id = self.next_id
         self.messages.append(message.dict())
         self.save_message(self.messages)
         self.next_id += 1
 
     def get_messages(self):
+        # Получает сообщения
         return self.messages
 
     def delete_messages(self, message_id: int):
+        # Удаляет сообщения
         self.messages = [msg for msg in self.messages if msg['id'] != message_id]
         self.save_message(self.messages)
         return self.messages
 
     def update_messages(self, content: dict):
+        # Редактирует сообщения
         messages = self.get_messages()
         for message in messages:
             if message['id'] == content['id']:
