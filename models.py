@@ -113,7 +113,6 @@ class MessageUpdate(BaseModel):
 class Chat:
     def __init__(self):
         self.messages = self.load_messages()
-        print('+++++++++++', self.messages)
         if self.messages:
             self.next_id = max(message["id"] for message in self.messages) + 1
         else:
